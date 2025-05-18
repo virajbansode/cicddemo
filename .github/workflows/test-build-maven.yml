@@ -54,7 +54,7 @@ jobs:
       # 7. Build Docker Image with Versioned Tag
       - name: Build Docker Image
         run: |
-          docker build -t my-app:$VERSION .
+          docker build -t cicd-app:$VERSION .
 
       # 8. Log in to Docker Hub (if pushing image)
       - name: Log in to Docker Hub
@@ -65,5 +65,5 @@ jobs:
       - name: Push Docker Image
         if: success()
         run: |
-          docker tag my-app:$VERSION ${{ secrets.DOCKER_HUB_USERNAME }}/my-app:$VERSION
-          docker push ${{ secrets.DOCKER_HUB_USERNAME }}/my-app:$VERSION
+          docker tag cicd-app:$VERSION ${{ secrets.DOCKER_HUB_USERNAME }}/cicd-app:$VERSION
+          docker push ${{ secrets.DOCKER_HUB_USERNAME }}/cicd-app:$VERSION
