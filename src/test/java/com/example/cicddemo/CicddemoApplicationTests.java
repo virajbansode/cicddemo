@@ -7,7 +7,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 class CicddemoApplicationTests {
 
 	@Test
-	void contextLoads() {
+	void mainMethodRuns() {
+		CicddemoApplication.main(new String[] {});
 	}
 
 }
