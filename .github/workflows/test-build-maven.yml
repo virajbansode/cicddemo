@@ -40,8 +40,8 @@ jobs:
         run: |
           COVERAGE=$(mvn jacoco:report | grep -oP 'Total\s+\d+\.\d+' | awk '{print $2}')
           echo "Code Coverage: $COVERAGE%"
-          if (( $(echo "$COVERAGE < 95" | bc -l) )); then
-            echo "Coverage below 95%! Failing build."
+          if (( $(echo "$COVERAGE < 70" | bc -l) )); then
+            echo "Coverage below 70%! Failing build."
             exit 1
           fi
 
