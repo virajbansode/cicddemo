@@ -9,8 +9,7 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    outputs:
-      version: ${{ steps.read_version.outputs.version }}
+
     steps:
       # 1. Checkout Repository
       - name: Checkout Repository
@@ -48,32 +47,23 @@ jobs:
 
       # 6. Extract Maven Project Version
       - name: Read Maven Version
-        id: read_version
         run: |
           VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
-          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "VERSION=$VERSION" >> $GITHUB_ENV
 
-  docker:
-    runs-on: ubuntu-latest
-    needs: build
-    steps:
-      # 1. Checkout Repository
-      - name: Checkout Repository
-        uses: actions/checkout@v4
-
-      # 2. Build Docker Image with Versioned Tag
+      # 7. Build Docker Image with Versioned Tag
       - name: Build Docker Image
         run: |
-          docker build -t cicd-app:${{ needs.build.outputs.version }} .
+          docker build -t cicd-app:$VERSION .
 
-      # 3. Log in to Docker Hub (if pushing image)
+      # 8. Log in to Docker Hub (if pushing image)
       - name: Log in to Docker Hub
         if: success()
         run: echo "${{ secrets.DOCKER_HUB_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_HUB_USERNAME }}" --password-stdin
 
-      # 4. Push Docker Image to Docker Hub (Optional)
+      # 9. Push Docker Image to Docker Hub (Optional)
       - name: Push Docker Image
         if: success()
         run: |
-          docker tag cicd-app:${{ needs.build.outputs.version }} ${{ secrets.DOCKER_HUB_USERNAME }}/cicd-app:${{ needs.build.outputs.version }}
-          docker push ${{ secrets.DOCKER_HUB_USERNAME }}/cicd-app:${{ needs.build.outputs.version }}
+          docker tag cicd-app:$VERSION ${{ secrets.DOCKER_HUB_USERNAME }}/cicd-app:$VERSION
+          docker push ${{ secrets.DOCKER_HUB_USERNAME }}/cicd-app:$VERSION
